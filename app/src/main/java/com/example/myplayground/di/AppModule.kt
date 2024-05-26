@@ -1,6 +1,7 @@
 package com.example.myplayground.di
 
-import com.example.myplayground.top_rated.MovieRepository
+import com.example.myplayground.data.repository.MovieRepositoryImpl
+import com.example.myplayground.domain.repository.MovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +36,6 @@ object AppModule {
     @Provides
     @Singleton
     fun providesMovieRepository(api: Retrofit): MovieRepository {
-        return MovieRepository(api)
+        return MovieRepositoryImpl(api)
     }
 }

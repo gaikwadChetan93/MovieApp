@@ -1,6 +1,6 @@
 package com.example.myplayground.data.remote
 
-import com.example.myplayground.model.MovieListResponse
+import com.example.myplayground.data.remote.dto.MovieListResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

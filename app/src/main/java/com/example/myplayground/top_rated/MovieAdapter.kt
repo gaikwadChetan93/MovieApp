@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplayground.R
-import com.example.myplayground.model.Movie
+import com.example.myplayground.data.remote.dto.Movie
 
 class MovieAdapter internal constructor(context: Context, private val movies: ArrayList<Movie>) :
     RecyclerView.Adapter<MovieAdapter.ViewHolder>() {

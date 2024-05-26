@@ -1,15 +1,18 @@
 package com.example.myplayground.top_rated
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myplayground.databinding.ActivityMainBinding
-import com.example.myplayground.model.Movie
+import com.example.myplayground.data.remote.dto.Movie
 import com.example.topratedmoviewitharchitecturepattern.presentation.top_rated.MovieAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MoviesActivity : AppCompatActivity() {
@@ -26,11 +29,28 @@ class MoviesActivity : AppCompatActivity() {
         setContentView(view)
 
         initList()
-        movieViewModel.getMovies().observe(this, Observer {
-            movies.addAll(it)
-            movieAdapter.notifyDataSetChanged()
-        })
-        movieViewModel.fetchMovies()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                movieViewModel.getUsers().collect { uiState ->
+                    when {
+                        uiState.isLoading -> {
+                            Toast.makeText(this@MoviesActivity, "Loading", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        uiState.coins.isNotEmpty() -> {
+                            movies.addAll(uiState.coins)
+                            movieAdapter.notifyDataSetChanged()
+                        }
+
+                        else -> {
+                            Toast.makeText(this@MoviesActivity, "Error", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initList() {

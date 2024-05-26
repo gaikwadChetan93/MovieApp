@@ -1,4 +1,4 @@
-package com.example.myplayground.model
+package com.example.myplayground.data.remote.dto
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
