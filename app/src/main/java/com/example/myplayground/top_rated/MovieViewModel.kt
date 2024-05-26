@@ -2,10 +2,13 @@ package com.example.myplayground.top_rated
 
 import androidx.lifecycle.*
 import com.example.myplayground.model.Movie
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieViewModel(
+@HiltViewModel
+class MovieViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
@@ -16,20 +19,6 @@ class MovieViewModel(
     fun fetchMovies() {
         viewModelScope.launch(IO) {
             movieRepository.fetchMovies()
-        }
-
-    }
-
-    class Factory(
-        private val movieRepository: MovieRepository
-    ) :
-        ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MovieViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return MovieViewModel(movieRepository) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
 }

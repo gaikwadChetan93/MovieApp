@@ -6,8 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.myplayground.data.remote.MovieApi
 import com.example.myplayground.model.Movie
 import retrofit2.Retrofit
+import javax.inject.Inject
 
-class MovieRepository(
+class MovieRepository @Inject constructor(
     private val retrofit: Retrofit
 ) {
 
