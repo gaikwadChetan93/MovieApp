@@ -27,7 +27,7 @@ object AppModule {
             .connectTimeout(30, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
+            .baseUrl("https://interview.zocdoc.com")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

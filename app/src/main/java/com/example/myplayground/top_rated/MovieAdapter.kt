@@ -25,7 +25,7 @@ class MovieAdapter internal constructor(context: Context, private val movies: Ar
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = movies[position]
-        holder.movieTitle.text = movie.title
+        holder.movieTitle.text = movie.name
     }
 
     override fun getItemCount(): Int {

@@ -15,7 +15,7 @@ class GetMoviesUseCase @Inject constructor(
     operator fun invoke(): Flow<Resource<List<Movie>>> = flow {
         try {
             emit(Resource.Loading())
-            val coins = repository.getMovies("1d9a4704d81b27085f142914119d38fe")
+            val coins = repository.getMovies("3b502b3f-b1ff-4128-bd99-626e74836d9c")
             emit(Resource.Success(coins))
         } catch(e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
