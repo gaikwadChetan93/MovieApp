@@ -1,6 +1,8 @@
 package com.example.myplayground.top_rated
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,12 +12,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myplayground.databinding.ActivityMainBinding
 import com.example.myplayground.data.remote.dto.Movie
-import com.example.topratedmoviewitharchitecturepattern.presentation.top_rated.MovieAdapter
+import com.example.myplayground.movie_detail.MovieDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MoviesActivity : AppCompatActivity() {
+class MoviesActivity : AppCompatActivity(), MovieAdapter.MovieClickedListener {
 
     private lateinit var movieAdapter: MovieAdapter
     private val movies = arrayListOf<Movie>()
@@ -32,15 +34,15 @@ class MoviesActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                movieViewModel.getUsers().collect { uiState ->
+                movieViewModel.getMovieList().collect { uiState ->
                     when {
                         uiState.isLoading -> {
                             Toast.makeText(this@MoviesActivity, "Loading", Toast.LENGTH_SHORT)
                                 .show()
                         }
 
-                        uiState.coins.isNotEmpty() -> {
-                            movies.addAll(uiState.coins)
+                        uiState.movieList.isNotEmpty() -> {
+                            movies.addAll(uiState.movieList)
                             movieAdapter.notifyDataSetChanged()
                         }
 
@@ -51,11 +53,20 @@ class MoviesActivity : AppCompatActivity() {
                 }
             }
         }
+
+        movieViewModel.getMovies()
     }
 
     private fun initList() {
         binding.movieList.layoutManager = LinearLayoutManager(this)
         movieAdapter = MovieAdapter(this, movies)
         binding.movieList.adapter = movieAdapter
+        movieAdapter.setClickListener(this)
+    }
+
+    override fun onMovieClick(view: View, movie: Movie) {
+        val i = Intent(this, MovieDetailActivity::class.java)
+        i.putExtra("id", movie.id)
+        startActivity(i)
     }
 }

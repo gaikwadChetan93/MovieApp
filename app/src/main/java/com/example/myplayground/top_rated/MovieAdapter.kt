@@ -1,13 +1,15 @@
-package com.example.topratedmoviewitharchitecturepattern.presentation.top_rated
+package com.example.myplayground.top_rated
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplayground.R
 import com.example.myplayground.data.remote.dto.Movie
+import com.squareup.picasso.Picasso
 
 class MovieAdapter internal constructor(context: Context, private val movies: ArrayList<Movie>) :
     RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
@@ -26,6 +28,7 @@ class MovieAdapter internal constructor(context: Context, private val movies: Ar
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = movies[position]
         holder.movieTitle.text = movie.name
+        Picasso.get().load("https://i.imgur.com/DvpvklR.png").into(holder.movieImg);
     }
 
     override fun getItemCount(): Int {
@@ -34,15 +37,17 @@ class MovieAdapter internal constructor(context: Context, private val movies: Ar
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        internal var movieTitle: TextView
+        var movieTitle: TextView
+        var movieImg: ImageView
 
         init {
             movieTitle = itemView.findViewById(R.id.tvMovieTitle)
+            movieImg = itemView.findViewById(R.id.img)
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
-            mClickListener.onMovieClick(view, adapterPosition)
+            mClickListener.onMovieClick(view, movies[adapterPosition])
         }
     }
 
@@ -51,6 +56,6 @@ class MovieAdapter internal constructor(context: Context, private val movies: Ar
     }
 
     interface MovieClickedListener {
-        fun onMovieClick(view: View, position: Int)
+        fun onMovieClick(view: View, movie: Movie)
     }
 }

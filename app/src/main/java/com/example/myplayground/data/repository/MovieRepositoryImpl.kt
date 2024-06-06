@@ -2,8 +2,8 @@ package com.example.myplayground.data.repository
 
 import com.example.myplayground.data.remote.MovieApi
 import com.example.myplayground.data.remote.dto.Movie
+import com.example.myplayground.data.remote.dto.MovieDetail
 import com.example.myplayground.domain.repository.MovieRepository
-import com.example.myplayground.domain.use_case.get_movies.GetMoviesUseCase
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -19,5 +19,12 @@ class MovieRepositoryImpl @Inject constructor(
         return retrofit
             .create(MovieApi::class.java)
             .fetchTopRatedMovies(apiKey, START_INDEX, NUM_MOVIES)
+    }
+
+    override suspend fun getMovie(apiKey: String, movieId: IntArray): MovieDetail {
+        return retrofit
+            .create(MovieApi::class.java)
+            .fetchMovieDetail(apiKey, movieId)
+            .first()
     }
 }

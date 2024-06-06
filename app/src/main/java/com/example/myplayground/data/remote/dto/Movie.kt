@@ -13,8 +13,3 @@ data class Movie(
     @SerializedName("Name")
     val name: String
 ): Parcelable
-
-data class MovieListResponse(
-    val page: String,
-    val results: ArrayList<Movie>
-)
