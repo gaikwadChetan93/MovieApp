@@ -29,10 +29,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Android Lint
-        run: ./gradlew lintDebug
+        run: ./gradlew lint
 
       - name: Upload Lint Report
         uses: actions/upload-artifact@v4
         with:
           name: android-lint-report
-          path: app/build/reports/lint-results-debug.html
+          path: app/build/reports/lint-results.html
