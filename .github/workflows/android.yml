@@ -1,4 +1,4 @@
-name: Android CI
+bugname: Android CI
 
 on:
   push:
@@ -29,10 +29,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Android Lint
-        run: ./gradlew lint
+        run: ./gradlew lintDebug
 
       - name: Upload Lint Report
         uses: actions/upload-artifact@v4
         with:
           name: android-lint-report
-          path: app/build/reports/lint-results.html
+          path: app/build/reports/lint-results-debug.html
