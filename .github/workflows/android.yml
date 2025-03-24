@@ -27,20 +27,11 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
-
   lint:
-    needs: setup
+    needs: [ setup ]
     name: Run Android Lint
     runs-on: ubuntu-latest
+
     steps:
       - name: Run Android Lint
         run: ./gradlew lint
@@ -48,49 +39,39 @@ jobs:
       - name: Upload Lint Report
         uses: actions/upload-artifact@v4
         with:
-          name: lint-report-${{ github.run_id }}
+          name: lint-report
           path: app/build/reports/lint-results.html
 
   unit-test:
-    needs: [lint]
-    name: Run Android Tests
+    needs: [ lint ]
+    name: Run Android test
     runs-on: ubuntu-latest
-    steps:
-      - name: Run Tests with Coverage
-        run: ./gradlew testDebugUnitTest jacocoTestReport
 
-      - name: Upload Test Report
+    steps:
+      - name: Run Android test
+        run: ./gradlew test
+
+      - name: Upload test Report
         uses: actions/upload-artifact@v4
         with:
-          name: test-report-${{ github.run_id }}
+          name: test-report
           path: app/build/reports/tests/testDebugUnitTest/
 
-      - name: Upload Code Coverage Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-coverage-${{ github.run_id }}
-          path: app/build/reports/jacoco/
-
   package:
-    needs: [unit-test]
-    name: Build Debug APK
+    needs: [ unit-test ]
+    name: Build debug APK
     runs-on: ubuntu-latest
+
     steps:
-      - name: Build Debug APK
+      - name: Build debug APK
         run: ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload apk
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-${{ github.run_id }}.apk
+          name: app.apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-  notify:
-    needs: [package]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send GitHub Workflow Notification
-        run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -d '{"state": "success", "description": "CI completed!", "context": "Android CI"}' \
-          https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}
+
+
+
