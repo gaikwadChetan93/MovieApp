@@ -67,16 +67,6 @@ jobs:
 
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
-
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
             
       - name: Run Android test
         run: ./gradlew test
@@ -107,16 +97,6 @@ jobs:
 
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
-
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
             
       - name: Build debug APK
         run: ./gradlew assembleDebug
