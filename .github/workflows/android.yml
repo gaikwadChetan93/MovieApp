@@ -8,10 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    name: Run Android Lint
+  setup:
+    name: Common Setup
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -28,6 +27,23 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+
+  lint:
+    needs: [ setup ]
+    name: Run Android Lint
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Run Android Lint
         run: ./gradlew lint
 
@@ -38,26 +54,11 @@ jobs:
           path: app/build/reports/lint-results.html
 
   unit-test:
-    needs: [ lint ]
+    needs: [ lint, setup ]
     name: Run Android test
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Grant Execute Permission for Gradlew
-        run: chmod +x gradlew
-
       - name: Run Android test
         run: ./gradlew test
 
@@ -68,26 +69,11 @@ jobs:
           path: app/build/reports/tests/testDebugUnitTest/
 
   package:
-    needs: [ unit-test ]
+    needs: [ unit-test, setup ]
     name: Build debug APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Grant Execute Permission for Gradlew
-        run: chmod +x gradlew
-
       - name: Build debug APK
         run: ./gradlew assembleDebug
 
@@ -96,4 +82,7 @@ jobs:
         with:
           name: app.apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+
+
 
